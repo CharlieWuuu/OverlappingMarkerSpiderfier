@@ -2,11 +2,7 @@
 <html lang="en">
     <head>
         <title>Overlapping Marker Spiderfier</title>
-        <script
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvNQytY-G6P1s-VopJPHsLU8J4SXfAG0Q&callback=initMap
-"
-            defer
-        ></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvNQytY-G6P1s-VopJPHsLU8J4SXfAG0Q&callback=initMap" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier/1.0.3/oms.min.js"></script>
         <style>
             body {
@@ -21,114 +17,6 @@
     </head>
     <body>
         <div id="map"></div>
-        <script>
-            // 點位資料
-            let pCases = [
-                [
-                    { lat: 23.5, lng: 121 },
-                    { lat: 23.5, lng: 121 },
-                ],
-                [
-                    { lat: 23.495, lng: 121 },
-                    { lat: 23.495, lng: 121 },
-                    { lat: 23.495, lng: 121 },
-                ],
-                [
-                    { lat: 23.495, lng: 121.01 },
-                    { lat: 23.495, lng: 121.01 },
-                    { lat: 23.495, lng: 121.01 },
-                    { lat: 23.495, lng: 121.01 },
-                ],
-                [
-                    { lat: 23.44, lng: 121.01 },
-                    { lat: 23.44, lng: 121.01 },
-                    { lat: 23.44, lng: 121.01 },
-                    { lat: 23.44, lng: 121.01 },
-                    { lat: 23.44, lng: 121.01 },
-                ],
-            ];
-            let map; // 地圖物件
-            let markerList = []; // 包含所有 marker 的陣列，設定自動展開時需要用
-
-            // 初始化地圖
-            function initMap() {
-                // 創建地圖並設置屬性
-                map = new google.maps.Map(document.getElementById('map'), {
-                    center: { lat: 23.5, lng: 121 },
-                    zoom: 8,
-                });
-                pCases.forEach(function (pCase) {
-                    createOMS(pCase); // 創建各組資料的展開功能
-                });
-                automaticSpiderfier(); // 設定自動展開功能
-            }
-
-            // 創建各組資料的展開功能
-            function createOMS(pCase) {
-                // 創建 OverlappingMarkerSpiderfier 物件
-                let oms = new OverlappingMarkerSpiderfier(map, {
-                    markersWontMove: true, // 點位是否不會更改：是
-                    markersWontHide: true, // 點位是否不會隱藏：是
-                    basicFormatEvents: true, // 點位只紀錄基本的事件屬性：是
-                    nearbyDistance: 0.001, // 多少距離內的點位會一同展開：0.001px
-                    spiralFootSeparation: 60, // 螺旋展開時的展開幅度：60px
-                    circleFootSeparation: 60, // 圓形展開時的展開幅度：60px
-                    keepSpiderfied: true, // 點已展開的點位不會收合：是
-                    ignoreMapClick: true, // 忽略點空白處時關閉展開：是
-                });
-                let iw = new google.maps.InfoWindow({
-                    disableAutoPan: true,
-                });
-                // 創建 Marker 到 oms 物件中
-                pCase.forEach(function (point, i) {
-                    let markerData = { lat: point.lat, lng: point.lng }; // 設定 Marker 的經緯度
-                    let marker = new google.maps.Marker({ position: markerData }); // 創建 Marker 並設置位置
-                    google.maps.event.addListener(marker, 'spider_click', function (e) {
-                        iw.setContent('markerData.text');
-                        iw.open(map, marker);
-                    });
-
-                    oms.addMarker(marker).forgetMarker(marker); // 將 Marker 添加到 oms 物件上；預設先不要有散開功能
-                    // 當層級大於 14 再打開 spiderfier 功能
-                    google.maps.event.addListener(map, 'zoom_changed', function () {
-                        if (map.getZoom() >= 14) {
-                            oms.addMarker(marker);
-                        } else {
-                            oms.forgetMarker(marker);
-                        }
-                    });
-                    if (i == 0) {
-                        markerList.push(marker); // 將 Marker 放到 markerList，之後設定自動展開時需要用
-                    }
-                });
-                oms.addListener('format', function (marker, status) {
-                    console.log(status);
-                    thisStatus = status;
-                    marker.status = status;
-                });
-            }
-
-            // 設定自動展開功能
-            function automaticSpiderfier() {
-                // 當地圖停止移動時執行以下程式碼
-                google.maps.event.addListener(map, 'idle', function () {
-                    // 延遲 10 毫秒後執行以下程式碼（等待套件判斷 marker 是否在視窗內，時間可自己調）
-                    setTimeout(function () {
-                        // 如果目前地圖縮放等級大於等於 14
-                        if (map.getZoom() >= 14) {
-                            // 對所有點位模擬點擊
-                            console.log(markerList);
-                            markerList.forEach(function (marker, i) {
-                                if (marker.status != 'SPIDERFIED') {
-                                    google.maps.event.trigger(marker, 'click');
-                                }
-                            });
-                        }
-                    }, 10);
-                });
-            }
-
-            window.initMap = initMap; // 執行初始化地圖
-        </script>
+        <script src="./setSpiderfier.js"></script>
     </body>
 </html>
