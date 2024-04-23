@@ -60,11 +60,16 @@ let markerList_differentCenter = []; // 包含所有 marker 的陣列，設定�
 // 初始化地圖
 function initMap() {
     // 創建地圖並設置屬性
+    // 1. 將 div 元素轉換為地圖
     map = new google.maps.Map(document.getElementById('map'), {
+        // 2. 設定地圖中心點
         center: { lat: 24.9719, lng: 121.535 },
+        // 3. 設定地圖縮放層級
         zoom: 14,
+        // 4. 設定地圖樣式
         styles: [
             {
+                // 5. 設定樣式：點位（poi）不顯示
                 featureType: 'poi',
                 stylers: [
                     {
@@ -75,27 +80,54 @@ function initMap() {
         ],
     });
 
+    // 創建資訊視窗
     let iw = new google.maps.InfoWindow();
 
-    createMarker_single(pCases_single, iw); // 創建各組資料的展開功能
-    createOMS_sameCenter(pCases_sameCenter, iw); // 創建各組資料的展開功能
-    createOMS_differentCenter(pCases_differentCenter, iw); // 創建各組資料的展開功能
+    // 創建各組資料的展開功能
+    createMarker_single(pCases_single, iw);
+    createOMS_sameCenter(pCases_sameCenter, iw);
+    createOMS_differentCenter(pCases_differentCenter, iw);
 
-    automaticSpiderfier(); // 設定自動展開功能
+    // 設定自動展開功能
+    automaticSpiderfier();
 }
 
+/**
+ * 創建各組資料的展開功能
+ *
+ * 對每一組資料 pCases_single，
+ * 遍歷 pCase_single 中的每個點位 point，
+ * 創建一個 Google Map Marker 並設置其屬性，包含：
+ *   - 位置：point.lat, point.lng
+ *   - 圖標：以 pCase_single, point 為參數，呼叫 setIcon() 函式來取得圖標 URL，並將圖標大小調整為 32x44，並將透明度調整為 0.2
+ *
+ * 將每個 marker 加入地圖中，並將 marker 與 InfoWindow 綁定：
+ *   - 將 InfoWindow 的內容設為 point.name
+ *   - 當 marker 被點擊時，將 InfoWindow 顯示出來
+ */
 function createMarker_single(pCases_single, iw) {
-    pCases_single.forEach(function (pCase_single, i) {
-        pCase_single.forEach(function (point, i) {
+    pCases_single.forEach(function (pCase_single) {
+        // 遍歷 pCase_single 中的每個點位 point
+        pCase_single.forEach(function (point) {
+            // 取得圖標 URL
             let iconURL = setIcon(pCase_single, point);
+            // 創建 Marker 並設置位置
             let marker = new google.maps.Marker({
                 position: { lat: point.lat, lng: point.lng },
-                icon: { url: iconURL, scaledSize: new google.maps.Size(32, 44), opacity: 0.2 },
-            }); // 創建 Marker 並設置位置
+                icon: {
+                    url: iconURL,
+                    scaledSize: new google.maps.Size(32, 44),
+                    opacity: 0.2,
+                },
+            });
+            // 將 marker 加入地圖中
             marker.setMap(map);
 
+            // 將 marker 與 InfoWindow 綁定
             google.maps.event.addListener(marker, 'click', function () {
+                // 將 InfoWindow 的內容設為 point.name
                 iw.setContent(point.name);
+                // 當 marker 被點擊時，將 InfoWindow 顯示出來
                 iw.open(map, marker);
             });
         });
@@ -209,24 +241,40 @@ function createOMS_differentCenter(pCases_differentCenter, iw) {
     });
 }
 
+/**
+ * 為每個 pCase 創建一個中央點位的 Marker 物件，並將其添加到 oms 物件上；
+ * 並將其隱藏，當地圖縮放等級大於等於 16 時才顯示，用於畫面調整。
+ * @param {Object} point - 點位物件
+ * @param {Number} i - 目前點位在 pCase 中的索引
+ * @param {Object} oms - OverlappingMarkerSpiderfier 物件
+ * @return {Object} centerMarker - 中央點位的 Marker 物件
+ */
 function createCenterMarker(point, i, oms) {
-    let centerMarker;
+    let centerMarker; // 中央點位的 Marker 物件
+
     if (i === 0) {
+        // 如果是第一個點位
         centerMarker = new google.maps.Marker({
             position: { lat: point.lat, lng: point.lng },
-            icon: { url: `../spiderfiedCenter.png`, scaledSize: new google.maps.Size(8, 8), anchor: new google.maps.Point(4, 4) },
+            icon: {
+                // 中央點位的標記圖示
+                url: `../spiderfiedCenter.png`, // 標記圖檔路徑
+                scaledSize: new google.maps.Size(8, 8), // 縮放大小
+                anchor: new google.maps.Point(4, 4), // 標記圖檔的中心點
+            },
         });
-        oms.addMarker(centerMarker).forgetMarker(centerMarker);
-        centerMarker.setVisible(false);
+        oms.addMarker(centerMarker).forgetMarker(centerMarker); // 將其添加到 oms 物件上，並忽略展開功能
+        centerMarker.setVisible(false); // 隱藏中央點位
 
         google.maps.event.addListener(map, 'idle', function () {
-            centerMarker.setVisible(map.getZoom() >= 16); // 如果地圖 >= 16 層級，顯示中央黑點
+            centerMarker.setVisible(map.getZoom() >= 16); // 當地圖 >= 16 層級時顯示中央點位
         });
     }
-    return centerMarker;
+
+    return centerMarker; // 將中央點位的 Marker 物件回傳
 }
 
-// 設定自動展開功能
+// 設定自動展開功能。當地圖停止移動時，執行自動展開的程式碼
 function automaticSpiderfier() {
     // 當地圖停止移動時執行以下程式碼
     google.maps.event.addListener(map, 'idle', function () {
@@ -236,8 +284,12 @@ function automaticSpiderfier() {
             if (map.getZoom() >= 16) {
                 // 對所有點位模擬點擊
                 markerList_sameCenter.forEach(function (markers, i) {
-                    markers.forEach((marker) => {
-                        if (marker.status != 'SPIDERFIED') {
+                    // 針對每個 markers[] 陣列，逐一對 marker 模擬點擊
+
+                    markers.forEach(function (marker) {
+                        // 當 marker 狀態不是 SPIDERFIED 時（也就是 marker 尚未展開），則模擬點擊此 marker
+
+                        if (marker.status !== 'SPIDERFIED') {
                             google.maps.event.trigger(marker, 'click');
                         }
                     });
@@ -247,12 +299,20 @@ function automaticSpiderfier() {
     });
 }
 
+/**
+ * 設定 icon 的 url
+ *
+ * @param {array} pCase 一組資料
+ * @param {object} point 單筆資料
+ * @return {string} icon 的 url
+ */
 function setIcon(pCase, point) {
-    let iconURL = `../${point.company}.png`;
+    let iconURL = `../${point.company}.png`; // 預設 icon 的 url
     if (pCase.length > 1 && map.getZoom() < 16) {
-        iconURL = '../SPIDERFIABLE.png';
+        // 如果資料數大於 1 且地圖縮放等級小於 16
+        iconURL = '../SPIDERFIABLE.png'; // 將 icon 的 url 設為 SPIDERFIABLE.png
     }
-    return iconURL;
+    return iconURL; // 傳回 icon 的 url
 }
 
 window.initMap = initMap; // 執行初始化地圖
