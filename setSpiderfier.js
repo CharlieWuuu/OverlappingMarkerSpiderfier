@@ -47,7 +47,7 @@ let pCases_differentCenter = [
         { name: '西門站2號出口', company: 'TaipeiMetro', lat: 25.04146, lng: 121.50837 },
         { name: '西門站3號出口', company: 'TaipeiMetro', lat: 25.04185, lng: 121.50876 },
         { name: '西門站4號出口', company: 'TaipeiMetro', lat: 25.04226, lng: 121.50888 },
-        { name: '西門站5號出口', company: 'TaipeiMetro', lat: 25.04257, lng: 121.50776 },
+        { name: '西門站5號出口', company: 'TaipeiMetro', lat: 25.04295, lng: 121.50872 },
         { name: '西門站6號出口', company: 'TaipeiMetro', lat: 25.04257, lng: 121.50776 },
     ],
 ];
@@ -63,9 +63,9 @@ function initMap() {
     // 1. 將 div 元素轉換為地圖
     map = new google.maps.Map(document.getElementById('map'), {
         // 2. 設定地圖中心點
-        center: { lat: 24.9719, lng: 121.535 },
+        center: { lat: 25.047, lng: 121.516 },
         // 3. 設定地圖縮放層級
-        zoom: 14,
+        zoom: 15,
         // 4. 設定地圖樣式
         styles: [
             {
@@ -87,6 +87,7 @@ function initMap() {
     createMarker_single(pCases_single, iw);
     createOMS_sameCenter(pCases_sameCenter, iw);
     createOMS_differentCenter(pCases_differentCenter, iw);
+    // createOMS_geojson(hotel);
 
     // 設定自動展開功能
     automaticSpiderfier();
@@ -200,7 +201,7 @@ function createOMS_differentCenter(pCases_differentCenter, iw) {
             markersWontMove: true, // 點位是否不會更改：是
             markersWontHide: true, // 點位是否不會隱藏：是
             basicFormatEvents: true, // 點位只紀錄基本的事件屬性：是
-            nearbyDistance: 50, // 多少距離內的點位會一同展開：1px
+            nearbyDistance: 100, // 多少距離內的點位會一同展開：1px
             spiralFootSeparation: 48, // 螺旋展開時的展開幅度：48px
             circleFootSeparation: 48, // 圓形展開時的展開幅度：48px
             keepSpiderfied: true, // 點已展開的點位不會收合：是
@@ -238,6 +239,50 @@ function createOMS_differentCenter(pCases_differentCenter, iw) {
             thisStatus = status;
             marker.status = status;
         });
+    });
+}
+
+function createOMS_geojson(pCases_differentCenter) {
+    let markers = [];
+    // 創建 Marker 到 oms 物件中
+
+    // 創建 OverlappingMarkerSpiderfier 物件
+    let oms = new OverlappingMarkerSpiderfier(map, {
+        markersWontMove: true, // 點位是否不會更改：是
+        markersWontHide: true, // 點位是否不會隱藏：是
+        basicFormatEvents: true, // 點位只紀錄基本的事件屬性：是
+        nearbyDistance: 45, // 多少距離內的點位會一同展開：45px
+        spiralFootSeparation: 60, // 螺旋展開時的展開幅度：60px
+        circleFootSeparation: 60, // 圓形展開時的展開幅度：60px
+        keepSpiderfied: true, // 點已展開的點位不會收合：是
+        ignoreMapClick: true, // 忽略點空白處時關閉展開：是
+    });
+
+    hotel.features.forEach(function (point, i) {
+        let marker = new google.maps.Marker({
+            position: { lat: point.geometry.coordinates[0][1], lng: point.geometry.coordinates[0][0] },
+            // icon: { url: `../${point.company}.png`, scaledSize: new google.maps.Size(32, 44), opacity: 0.2 },
+        }); // 創建 Marker 並設置位置
+
+        oms.addMarker(marker); // 將 Marker 添加到 oms 物件上；預設先不要有散開功能
+        // 當層級大於 14 再打開 spiderfier 功能
+        // google.maps.event.addListener(map, 'idle', function () {
+        //     if (pCase_differentCenter.length > 1) {
+        //         if (map.getZoom() >= 14) {
+        //             oms.addMarker(marker); // addMarker 才會有展開功能
+        //         } else {
+        //             oms.forgetMarker(marker); // forgetMarker 會移除展開功能
+        //         }
+        //     }
+        // });
+
+        markers.push(marker); // 將 Marker 放到 markerList，之後設定自動展開時需要用
+    });
+
+    markerList_differentCenter.push(markers);
+    oms.addListener('format', function (marker, status) {
+        thisStatus = status;
+        marker.status = status;
     });
 }
 
@@ -316,3 +361,23 @@ function setIcon(pCase, point) {
 }
 
 window.initMap = initMap; // 執行初始化地圖
+
+function example() {
+    let pointList = [
+        { name: '西門站1號出口', lat: 25.04213, lng: 121.50762 },
+        { name: '西門站2號出口', lat: 25.04146, lng: 121.50837 },
+        { name: '西門站3號出口', lat: 25.04185, lng: 121.50876 },
+        { name: '西門站4號出口', lat: 25.04226, lng: 121.50888 },
+        { name: '西門站5號出口', lat: 25.04257, lng: 121.50776 },
+        { name: '西門站6號出口', lat: 25.04257, lng: 121.50776 },
+    ];
+
+    let oms = new OverlappingMarkerSpiderfier(map);
+
+    pointList.forEach(function (point, i) {
+        let marker = new google.maps.Marker({
+            position: { lat: point.lat, lng: point.lng },
+        });
+        oms.addMarker(marker);
+    });
+}
