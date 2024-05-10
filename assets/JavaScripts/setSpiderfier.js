@@ -211,7 +211,7 @@ function createOMS_differentCenter(pCases_differentCenter, iw) {
         pCase_differentCenter.forEach(function (point, i) {
             let marker = new google.maps.Marker({
                 position: { lat: point.lat, lng: point.lng },
-                icon: { url: `../${point.company}.png`, scaledSize: new google.maps.Size(32, 44), opacity: 0.2 },
+                icon: { url: `../../assets/Images/${point.company}.png`, scaledSize: new google.maps.Size(32, 44), opacity: 0.2 },
             }); // 創建 Marker 並設置位置
 
             google.maps.event.addListener(marker, 'spider_click', function () {
@@ -303,7 +303,7 @@ function createCenterMarker(point, i, oms) {
             position: { lat: point.lat, lng: point.lng },
             icon: {
                 // 中央點位的標記圖示
-                url: `../spiderfiedCenter.png`, // 標記圖檔路徑
+                url: `../../assets/Images/spiderfiedCenter.png`, // 標記圖檔路徑
                 scaledSize: new google.maps.Size(8, 8), // 縮放大小
                 anchor: new google.maps.Point(4, 4), // 標記圖檔的中心點
             },
@@ -352,10 +352,10 @@ function automaticSpiderfier() {
  * @return {string} icon 的 url
  */
 function setIcon(pCase, point) {
-    let iconURL = `../${point.company}.png`; // 預設 icon 的 url
+    let iconURL = `../../assets/Images/${point.company}.png`; // 預設 icon 的 url
     if (pCase.length > 1 && map.getZoom() < 16) {
         // 如果資料數大於 1 且地圖縮放等級小於 16
-        iconURL = '../SPIDERFIABLE.png'; // 將 icon 的 url 設為 SPIDERFIABLE.png
+        iconURL = '../../assets/Images/SPIDERFIABLE.png'; // 將 icon 的 url 設為 SPIDERFIABLE.png
     }
     return iconURL; // 傳回 icon 的 url
 }
