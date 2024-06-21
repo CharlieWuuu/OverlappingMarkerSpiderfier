@@ -1,26 +1,35 @@
-// 點位資料：沒有重複點位的
-let pCases_single = [[{ name: '十四張1號出口', company: 'NewTaipeiMetro', lat: 24.9842, lng: 121.528 }], [{ name: '新店站1號出口', company: 'TaipeiMetro', lat: 24.9582, lng: 121.5377 }]];
-// 點位資料：有重複點位的
+// 點位資料
 let pCases_sameCenter = [
     [
-        { name: '大坪林站1號出口', company: 'TaipeiMetro', lat: 24.9822, lng: 121.5417 },
-        { name: '大坪林站2號出口', company: 'TaipeiMetro', lat: 24.9822, lng: 121.5417 },
-        { name: '大坪林站3號出口', company: 'TaipeiMetro', lat: 24.9822, lng: 121.5417 },
-        { name: '大坪林站4號出口', company: 'TaipeiMetro', lat: 24.9822, lng: 121.5417 },
-        { name: '大坪林站5號出口', company: 'NewTaipeiMetro', lat: 24.9822, lng: 121.5417 },
+        { name: '台北車站M1出口', company: 'TaipeiMetro', lat: 25.046442346063607, lng: 121.51753964075166 },
+        { name: '台北車站M2出口', company: 'TaipeiMetro', lat: 25.046442346063607, lng: 121.51753964075166 },
+        { name: '台北車站M3出口', company: 'TaipeiMetro', lat: 25.046442346063607, lng: 121.51753964075166 },
+        { name: '台北車站M4出口', company: 'TaipeiMetro', lat: 25.046442346063607, lng: 121.51753964075166 },
+        { name: '台北車站M5出口', company: 'TaipeiMetro', lat: 25.046442346063607, lng: 121.51753964075166 },
+        { name: '台北車站M6出口', company: 'TaipeiMetro', lat: 25.046442346063607, lng: 121.51753964075166 },
+        { name: '台北車站M7出口', company: 'TaipeiMetro', lat: 25.046442346063607, lng: 121.51753964075166 },
+        { name: '台北車站M8出口', company: 'TaipeiMetro', lat: 25.046442346063607, lng: 121.51753964075166 },
     ],
     [
-        { name: '七張站1號出口', company: 'TaipeiMetro', lat: 24.9749, lng: 121.5431 },
-        { name: '七張站2號出口', company: 'TaipeiMetro', lat: 24.9749, lng: 121.5431 },
+        { name: '北門站1號出口', company: 'TaipeiMetro', lat: 25.049273672733875, lng: 121.5102511328267 },
+        { name: '北門站2號出口', company: 'TaipeiMetro', lat: 25.049273672733875, lng: 121.5102511328267 },
+        { name: '北門站3號出口', company: 'TaipeiMetro', lat: 25.049273672733875, lng: 121.5102511328267 },
     ],
     [
-        { name: '新店區公所站1號出口', company: 'TaipeiMetro', lat: 24.9674, lng: 121.5411 },
-        { name: '大坪林站2號出口', company: 'TaipeiMetro', lat: 24.9674, lng: 121.5411 },
+        { name: '中山站1號出口', company: 'TaipeiMetro', lat: 25.052655107174818, lng: 121.52039993494577 },
+        { name: '中山站2號出口', company: 'TaipeiMetro', lat: 25.052655107174818, lng: 121.52039993494577 },
+        { name: '中山站3號出口', company: 'TaipeiMetro', lat: 25.052655107174818, lng: 121.52039993494577 },
+        { name: '中山站4號出口', company: 'TaipeiMetro', lat: 25.052655107174818, lng: 121.52039993494577 },
+        { name: '中山站5號出口', company: 'TaipeiMetro', lat: 25.052655107174818, lng: 121.52039993494577 },
+        { name: '中山站6號出口', company: 'TaipeiMetro', lat: 25.052655107174818, lng: 121.52039993494577 },
     ],
-
     [
-        { name: '小碧潭站1號出口', company: 'TaipeiMetro', lat: 24.9716, lng: 121.5309 },
-        { name: '小碧潭站2號出口', company: 'TaipeiMetro', lat: 24.9716, lng: 121.5309 },
+        { name: '西門站1號出口', company: 'TaipeiMetro', lat: 25.042180267981013, lng: 121.50823022051762 },
+        { name: '西門站2號出口', company: 'TaipeiMetro', lat: 25.042180267981013, lng: 121.50823022051762 },
+        { name: '西門站3號出口', company: 'TaipeiMetro', lat: 25.042180267981013, lng: 121.50823022051762 },
+        { name: '西門站4號出口', company: 'TaipeiMetro', lat: 25.042180267981013, lng: 121.50823022051762 },
+        { name: '西門站5號出口', company: 'TaipeiMetro', lat: 25.042180267981013, lng: 121.50823022051762 },
+        { name: '西門站6號出口', company: 'TaipeiMetro', lat: 25.042180267981013, lng: 121.50823022051762 },
     ],
 ];
 
@@ -53,6 +62,7 @@ let pCases_differentCenter = [
 ];
 
 let map; // 地圖物件
+let mode = 'auto'; // 選擇模式
 let markerList_single = []; // 包含所有 marker 的陣列，設定自動展開時需要用
 let markerList_sameCenter = []; // 包含所有 marker 的陣列，設定自動展開時需要用
 let markerList_differentCenter = []; // 包含所有 marker 的陣列，設定自動展開時需要用
@@ -84,57 +94,16 @@ function initMap() {
     let iw = new google.maps.InfoWindow();
 
     // 創建各組資料的展開功能
-    createMarker_single(pCases_single, iw);
     createOMS_sameCenter(pCases_sameCenter, iw);
     createOMS_differentCenter(pCases_differentCenter, iw);
-    // createOMS_geojson(hotel);
 
     // 設定自動展開功能
     automaticSpiderfier();
 }
 
-/**
- * 創建各組資料的展開功能
- *
- * 對每一組資料 pCases_single，
- * 遍歷 pCase_single 中的每個點位 point，
- * 創建一個 Google Map Marker 並設置其屬性，包含：
- *   - 位置：point.lat, point.lng
- *   - 圖標：以 pCase_single, point 為參數，呼叫 setIcon() 函式來取得圖標 URL，並將圖標大小調整為 32x44，並將透明度調整為 0.2
- *
- * 將每個 marker 加入地圖中，並將 marker 與 InfoWindow 綁定：
- *   - 將 InfoWindow 的內容設為 point.name
- *   - 當 marker 被點擊時，將 InfoWindow 顯示出來
- */
-function createMarker_single(pCases_single, iw) {
-    pCases_single.forEach(function (pCase_single) {
-        // 遍歷 pCase_single 中的每個點位 point
-        pCase_single.forEach(function (point) {
-            // 取得圖標 URL
-            let iconURL = setIcon(pCase_single, point);
-            // 創建 Marker 並設置位置
-            let marker = new google.maps.Marker({
-                position: { lat: point.lat, lng: point.lng },
-                icon: {
-                    url: iconURL,
-                    scaledSize: new google.maps.Size(32, 44),
-                    opacity: 0.2,
-                },
-            });
-            // 將 marker 加入地圖中
-            marker.setMap(map);
-
-            // 將 marker 與 InfoWindow 綁定
-            google.maps.event.addListener(marker, 'click', function () {
-                // 將 InfoWindow 的內容設為 point.name
-                iw.setContent(point.name);
-                // 當 marker 被點擊時，將 InfoWindow 顯示出來
-                iw.open(map, marker);
-            });
-        });
-    });
-}
-
+// 創建各組資料的展開功能
+let oms_sameCenter_Arr = [];
+let oms_differentCenter;
 // 創建各組資料的展開功能
 function createOMS_sameCenter(pCases_sameCenter, iw) {
     let markers = [];
@@ -180,6 +149,17 @@ function createOMS_sameCenter(pCases_sameCenter, iw) {
                 }
             });
 
+            document.getElementById('autoSpiderfier').addEventListener('click', function () {
+                mode = 'auto';
+                marker.setVisible(false);
+                oms_sameCenter_Arr.forEach((oms) => oms.unspiderfy());
+            });
+            document.getElementById('customizeSpiderfier').addEventListener('click', function () {
+                mode = 'customize';
+                marker.setVisible(true);
+            });
+
+            marker.setVisible(false);
             markers.push(marker); // 將 Marker 放到 markerList，之後設定自動展開時需要用
         });
 
@@ -188,6 +168,7 @@ function createOMS_sameCenter(pCases_sameCenter, iw) {
             thisStatus = status;
             marker.status = status;
         });
+        oms_sameCenter_Arr.push(oms);
     });
 }
 
@@ -197,7 +178,7 @@ function createOMS_differentCenter(pCases_differentCenter, iw) {
 
     pCases_differentCenter.forEach(function (pCase_differentCenter) {
         // 創建 OverlappingMarkerSpiderfier 物件
-        let oms = new OverlappingMarkerSpiderfier(map, {
+        oms_differentCenter = new OverlappingMarkerSpiderfier(map, {
             markersWontMove: true, // 點位是否不會更改：是
             markersWontHide: true, // 點位是否不會隱藏：是
             basicFormatEvents: true, // 點位只紀錄基本的事件屬性：是
@@ -219,70 +200,34 @@ function createOMS_differentCenter(pCases_differentCenter, iw) {
                 iw.open(map, marker);
             });
 
-            oms.addMarker(marker); // 將 Marker 添加到 oms 物件上；預設先不要有散開功能
+            oms_differentCenter.addMarker(marker); // 將 Marker 添加到 oms 物件上；預設先不要有散開功能
             // 當層級大於 14 再打開 spiderfier 功能
             google.maps.event.addListener(map, 'idle', function () {
                 if (pCase_differentCenter.length > 1) {
                     if (map.getZoom() >= 14) {
-                        oms.addMarker(marker); // addMarker 才會有展開功能
+                        oms_differentCenter.addMarker(marker); // addMarker 才會有展開功能
                     } else {
-                        oms.forgetMarker(marker); // forgetMarker 會移除展開功能
+                        oms_differentCenter.forgetMarker(marker); // forgetMarker 會移除展開功能
                     }
                 }
             });
-
+            document.getElementById('autoSpiderfier').addEventListener('click', function () {
+                mode = 'auto';
+                marker.setVisible(true);
+            });
+            document.getElementById('customizeSpiderfier').addEventListener('click', function () {
+                mode = 'customize';
+                marker.setVisible(false);
+                oms_differentCenter.unspiderfy();
+            });
             markers.push(marker); // 將 Marker 放到 markerList，之後設定自動展開時需要用
         });
 
         markerList_differentCenter.push(markers);
-        oms.addListener('format', function (marker, status) {
+        oms_differentCenter.addListener('format', function (marker, status) {
             thisStatus = status;
             marker.status = status;
         });
-    });
-}
-
-function createOMS_geojson(pCases_differentCenter) {
-    let markers = [];
-    // 創建 Marker 到 oms 物件中
-
-    // 創建 OverlappingMarkerSpiderfier 物件
-    let oms = new OverlappingMarkerSpiderfier(map, {
-        markersWontMove: true, // 點位是否不會更改：是
-        markersWontHide: true, // 點位是否不會隱藏：是
-        basicFormatEvents: true, // 點位只紀錄基本的事件屬性：是
-        nearbyDistance: 45, // 多少距離內的點位會一同展開：45px
-        spiralFootSeparation: 60, // 螺旋展開時的展開幅度：60px
-        circleFootSeparation: 60, // 圓形展開時的展開幅度：60px
-        keepSpiderfied: true, // 點已展開的點位不會收合：是
-        ignoreMapClick: true, // 忽略點空白處時關閉展開：是
-    });
-
-    hotel.features.forEach(function (point, i) {
-        let marker = new google.maps.Marker({
-            position: { lat: point.geometry.coordinates[0][1], lng: point.geometry.coordinates[0][0] },
-            // icon: { url: `../${point.company}.png`, scaledSize: new google.maps.Size(32, 44), opacity: 0.2 },
-        }); // 創建 Marker 並設置位置
-
-        oms.addMarker(marker); // 將 Marker 添加到 oms 物件上；預設先不要有散開功能
-        // 當層級大於 14 再打開 spiderfier 功能
-        // google.maps.event.addListener(map, 'idle', function () {
-        //     if (pCase_differentCenter.length > 1) {
-        //         if (map.getZoom() >= 14) {
-        //             oms.addMarker(marker); // addMarker 才會有展開功能
-        //         } else {
-        //             oms.forgetMarker(marker); // forgetMarker 會移除展開功能
-        //         }
-        //     }
-        // });
-
-        markers.push(marker); // 將 Marker 放到 markerList，之後設定自動展開時需要用
-    });
-
-    markerList_differentCenter.push(markers);
-    oms.addListener('format', function (marker, status) {
-        thisStatus = status;
-        marker.status = status;
     });
 }
 
@@ -312,7 +257,15 @@ function createCenterMarker(point, i, oms) {
         centerMarker.setVisible(false); // 隱藏中央點位
 
         google.maps.event.addListener(map, 'idle', function () {
-            centerMarker.setVisible(map.getZoom() >= 16); // 當地圖 >= 16 層級時顯示中央點位
+            if (mode === 'customize') {
+                centerMarker.setVisible(map.getZoom() >= 16); // 當地圖 >= 16 層級時顯示中央點位
+            }
+        });
+        document.getElementById('autoSpiderfier').addEventListener('click', function () {
+            centerMarker.setVisible(false);
+        });
+        document.getElementById('customizeSpiderfier').addEventListener('click', function () {
+            centerMarker.setVisible(true);
         });
     }
 
@@ -333,14 +286,29 @@ function automaticSpiderfier() {
 
                     markers.forEach(function (marker) {
                         // 當 marker 狀態不是 SPIDERFIED 時（也就是 marker 尚未展開），則模擬點擊此 marker
-
-                        if (marker.status !== 'SPIDERFIED') {
-                            google.maps.event.trigger(marker, 'click');
+                        if (marker != undefined) {
+                            if (marker.status !== 'SPIDERFIED') {
+                                google.maps.event.trigger(marker, 'click');
+                            }
                         }
                     });
                 });
             }
         }, 10);
+    });
+    document.getElementById('customizeSpiderfier').addEventListener('click', function () {
+        markerList_sameCenter.forEach(function (markers, i) {
+            // 針對每個 markers[] 陣列，逐一對 marker 模擬點擊
+
+            markers.forEach(function (marker) {
+                // 當 marker 狀態不是 SPIDERFIED 時（也就是 marker 尚未展開），則模擬點擊此 marker
+                if (marker != undefined) {
+                    if (marker.status !== 'SPIDERFIED') {
+                        google.maps.event.trigger(marker, 'click');
+                    }
+                }
+            });
+        });
     });
 }
 
@@ -361,23 +329,3 @@ function setIcon(pCase, point) {
 }
 
 window.initMap = initMap; // 執行初始化地圖
-
-function example() {
-    let pointList = [
-        { name: '西門站1號出口', lat: 25.04213, lng: 121.50762 },
-        { name: '西門站2號出口', lat: 25.04146, lng: 121.50837 },
-        { name: '西門站3號出口', lat: 25.04185, lng: 121.50876 },
-        { name: '西門站4號出口', lat: 25.04226, lng: 121.50888 },
-        { name: '西門站5號出口', lat: 25.04257, lng: 121.50776 },
-        { name: '西門站6號出口', lat: 25.04257, lng: 121.50776 },
-    ];
-
-    let oms = new OverlappingMarkerSpiderfier(map);
-
-    pointList.forEach(function (point, i) {
-        let marker = new google.maps.Marker({
-            position: { lat: point.lat, lng: point.lng },
-        });
-        oms.addMarker(marker);
-    });
-}
