@@ -153,13 +153,17 @@ function createOMS_sameCenter(pCases_sameCenter, iw) {
             });
 
             document.getElementById('autoSpiderfier').addEventListener('click', function () {
+                mode = 'customize';
+                marker.setVisible(true);
+                document.getElementById('autoSpiderfier').style.display = 'none';
+                document.getElementById('customizeSpiderfier').style.display = 'block';
+            });
+            document.getElementById('customizeSpiderfier').addEventListener('click', function () {
                 mode = 'auto';
                 marker.setVisible(false);
                 oms_sameCenter_Arr.forEach((oms) => oms.unspiderfy());
-            });
-            document.getElementById('customizeSpiderfier').addEventListener('click', function () {
-                mode = 'customize';
-                marker.setVisible(true);
+                document.getElementById('customizeSpiderfier').style.display = 'none';
+                document.getElementById('autoSpiderfier').style.display = 'block';
             });
 
             marker.setVisible(false);
@@ -215,13 +219,13 @@ function createOMS_differentCenter(pCases_differentCenter, iw) {
                 }
             });
             document.getElementById('autoSpiderfier').addEventListener('click', function () {
-                mode = 'auto';
-                marker.setVisible(true);
-            });
-            document.getElementById('customizeSpiderfier').addEventListener('click', function () {
                 mode = 'customize';
                 marker.setVisible(false);
                 oms_differentCenter.unspiderfy();
+            });
+            document.getElementById('customizeSpiderfier').addEventListener('click', function () {
+                mode = 'auto';
+                marker.setVisible(true);
             });
             markers.push(marker); // 將 Marker 放到 markerList，之後設定自動展開時需要用
         });
@@ -265,10 +269,10 @@ function createCenterMarker(point, i, oms) {
             }
         });
         document.getElementById('autoSpiderfier').addEventListener('click', function () {
-            centerMarker.setVisible(false);
+            centerMarker.setVisible(true);
         });
         document.getElementById('customizeSpiderfier').addEventListener('click', function () {
-            centerMarker.setVisible(true);
+            centerMarker.setVisible(false);
         });
     }
 
