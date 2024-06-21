@@ -76,6 +76,9 @@ function initMap() {
         center: { lat: 25.047, lng: 121.5144 },
         // 3. 設定地圖縮放層級
         zoom: 15,
+        disableDefaultUI: true,
+        streetViewControl: false,
+        fullscreenControl: false,
         // 4. 設定地圖樣式
         styles: [
             {
