@@ -73,7 +73,7 @@ function initMap() {
     // 1. 將 div 元素轉換為地圖
     map = new google.maps.Map(document.getElementById('map'), {
         // 2. 設定地圖中心點
-        center: { lat: 25.047, lng: 121.516 },
+        center: { lat: 25.047, lng: 121.5144 },
         // 3. 設定地圖縮放層級
         zoom: 15,
         // 4. 設定地圖樣式
