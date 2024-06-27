@@ -155,6 +155,7 @@ function createOMS_sameCenter(pCases_sameCenter, iw) {
             document.getElementById('autoSpiderfier').addEventListener('click', function () {
                 mode = 'customize';
                 marker.setVisible(true);
+
                 document.getElementById('autoSpiderfier').style.display = 'none';
                 document.getElementById('customizeSpiderfier').style.display = 'block';
             });
@@ -269,7 +270,7 @@ function createCenterMarker(point, i, oms) {
             }
         });
         document.getElementById('autoSpiderfier').addEventListener('click', function () {
-            centerMarker.setVisible(true);
+            centerMarker.setVisible(map.getZoom() >= 16);
         });
         document.getElementById('customizeSpiderfier').addEventListener('click', function () {
             centerMarker.setVisible(false);
